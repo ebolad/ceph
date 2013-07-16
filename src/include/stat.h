@@ -13,67 +13,133 @@
  * a no-op.
  */
 
-/* modification time */
+#ifdef HAVE_STAT_TV_NSEC
 
 static inline uint32_t stat_get_mtime_nsec(struct stat *st)
 {
-#ifdef HAVE_STAT_TV_NSEC
   return st->st_mtim.tv_nsec;
-#elif defined(HAVE_STAT_ST_TIMESPEC)
-  return st->st_mtimespec.tv_nsec;
-#else
-  return 0;
-#endif
 }
 
 static inline void stat_set_mtime_nsec(struct stat *st, uint32_t nsec)
 {
-#ifdef HAVE_STAT_TV_NSEC
   st->st_mtim.tv_nsec = nsec;
-#elif defined(HAVE_STAT_ST_TIMESPEC)
-  st->st_mtimespec.tv_nsec = nsec;
-#endif
 }
-
-#define stat_get_mtime_sec(st) ((st)->st_mtime)
-#define stat_set_mtime_sec(st, sec) do { (st)->st_mtime = sec; } while (0)
-
-/* access time */
 
 static inline uint32_t stat_get_atime_nsec(struct stat *st)
 {
-#ifdef HAVE_STAT_TV_NSEC
   return st->st_atim.tv_nsec;
-#elif defined(HAVE_STAT_ST_TIMESPEC)
-  return st->st_atimespec.tv_nsec;
-#else
-  return 0;
-#endif
 }
 
 static inline void stat_set_atime_nsec(struct stat *st, uint32_t nsec)
 {
-#ifdef HAVE_STAT_TV_NSEC
   st->st_atim.tv_nsec = nsec;
-#elif defined(HAVE_STAT_ST_TIMESPEC)
-  st->st_atimespec.tv_nsec = nsec;
-#endif
 }
 
-#define stat_get_atime_sec(st) ((st)->st_atime)
-#define stat_set_atime_sec(st, sec) do { (st)->st_atime = sec; } while (0)
-
-/* last status change time */
+static inline uint32_t stat_get_ctime_nsec(struct stat *st)
+{
+  return st->st_ctim.tv_nsec;
+}
 
 static inline void stat_set_ctime_nsec(struct stat *st, uint32_t nsec)
 {
-#ifdef HAVE_STAT_TV_NSEC
   st->st_ctim.tv_nsec = nsec;
-#elif defined(HAVE_STAT_ST_TIMESPEC)
-  st->st_ctimespec.tv_nsec = nsec;
-#endif
 }
 
-#define stat_set_ctime_sec(st, sec) do { (st)->st_ctime = sec; } while (0)
+#elif defined(HAVE_STAT_ST_TIMESPEC)
+
+static inline uint32_t stat_get_mtime_nsec(struct stat *st)
+{
+  return st->st_mtimespec.tv_nsec;
+}
+
+static inline void stat_set_mtime_nsec(struct stat *st, uint32_t nsec)
+{
+  st->st_mtimespec.tv_nsec = nsec;
+}
+
+static inline uint32_t stat_get_atime_nsec(struct stat *st)
+{
+  return st->st_atimespec.tv_nsec;
+}
+
+static inline void stat_set_atime_nsec(struct stat *st, uint32_t nsec)
+{
+  st->st_atimespec.tv_nsec = nsec;
+}
+
+static inline uint32_t stat_get_ctime_nsec(struct stat *st)
+{
+  return st->st_ctimespec.tv_nsec;
+}
+
+static inline void stat_set_ctime_nsec(struct stat *st, uint32_t nsec)
+{
+  st->st_ctimespec.tv_nsec = nsec;
+}
+
+#else
+
+static inline uint32_t stat_get_mtime_nsec(struct stat *st)
+{
+  return 0;
+}
+
+static inline void stat_set_mtime_nsec(struct stat *st, uint32_t nsec)
+{
+}
+
+static inline uint32_t stat_get_atime_nsec(struct stat *st)
+{
+  return 0;
+}
+
+static inline void stat_set_atime_nsec(struct stat *st, uint32_t nsec)
+{
+}
+
+static inline uint32_t stat_get_ctime_nsec(struct stat *st)
+{
+  return 0;
+}
+
+static inline void stat_set_ctime_nsec(struct stat *st, uint32_t nsec)
+{
+}
+
+#endif
+
+/*
+ * Access second-resolution `struct stat` members.
+ */
+
+static inline uint32_t stat_get_mtime_sec(struct stat *st)
+{
+  return st->st_mtime;
+}
+
+static inline void stat_set_mtime_sec(struct stat *st, uint32_t sec)
+{
+  st->st_mtime = sec;
+}
+
+static inline uint32_t stat_get_atime_sec(struct stat *st)
+{
+  return st->st_atime;
+}
+
+static inline void stat_set_atime_sec(struct stat *st, uint32_t sec)
+{
+  st->st_atime = sec;
+}
+
+static inline uint32_t stat_get_ctime_sec(struct stat *st)
+{
+  return st->st_ctime;
+}
+
+static inline void stat_set_ctime_sec(struct stat *st, uint32_t sec)
+{
+  st->st_ctime = sec;
+}
 
 #endif
