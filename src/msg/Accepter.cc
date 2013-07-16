@@ -165,6 +165,8 @@ int Accepter::rebind(const set<int>& avoid_ports)
   new_avoid.insert(addr.get_port());
   addr.set_port(0);
 
+  msgr->mark_down_all();
+
   ldout(msgr->cct,10) << " will try " << addr << " and avoid ports " << new_avoid << dendl;
   int r = bind(addr, new_avoid);
   if (r == 0)
